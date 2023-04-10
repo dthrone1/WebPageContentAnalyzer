@@ -1,0 +1,81 @@
+﻿@using HtmlAgilityPack;
+@model WebPageContentAnalyzer.Models.AnalyzeViewModel
+
+@{
+    ViewBag.Title = "Analysis Results";
+    var imageUrls = Model.ImageUrls.ToList();
+
+    Uri uri = new Uri(Model.Url);
+    string baseUrl = $"{uri.Scheme}://{uri.Host}";
+}
+
+<div class="container">
+    <h1>Analysis Results</h1>
+    <p>The webpage at <strong>@Model.Url</strong> has <strong>@Model.WordCount</strong> words.</p>
+    <h2>Top 10 Words</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Word</th>
+                <th>Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var wordCount in Model.Top10Words)
+            {
+                <tr>
+                    <td>@wordCount.Key</td>
+                    <td>@wordCount.Value</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <h2>Images</h2>
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+            @for (int i = 0; i < imageUrls.Count; i++)
+            {
+                <li data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@i" class="@((i == 0) ? "active" : "")"></li>
+            }
+        </ol>
+
+        <!-- Wrapper for slides -->
+        <div class="carousel-inner">
+            @for (int i = 0; i < imageUrls.Count; i++)
+            {
+                <div class="carousel-item @((i == 0) ? "active" : "")">
+                    @{
+                        //Check if returned image path is relative. If it's relative add base url provided by user.
+                        bool isRelativePath = imageUrls[i].StartsWith("/") || imageUrls[i].StartsWith("../") || imageUrls[i].StartsWith("./") || imageUrls[i].StartsWith("~");
+
+                        var imageUrl = string.Empty;
+                        if (isRelativePath)
+                        {
+                            imageUrl = $"{baseUrl}/{imageUrls[i]}";
+                        }
+                        else
+                        {
+                            imageUrl = imageUrls[i];
+                        }
+
+                    }
+                    <img src="@imageUrl" class="d-block w-100" alt="image">
+                </div>
+            }
+        </div>
+
+        <!-- Controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+
+
+</div>

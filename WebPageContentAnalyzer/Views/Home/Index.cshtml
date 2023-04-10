@@ -1,0 +1,17 @@
+﻿@model WebPageContentAnalyzer.Models.AnalyzeViewModel
+
+@{
+    ViewBag.Title = "Remote Webpage Content Analyzer";
+}
+
+<div class="container">
+    <h1>Remote Webpage Content Analyzer</h1>
+    @using (Html.BeginForm("Analyze", "Home", FormMethod.Post))
+    {
+        <div class="form-group">
+            @Html.Label("Enter the URL of a cross domain webpage:")
+            @Html.TextBox("url", "", new { @class = "form-control" })
+        </div>
+        <button type="submit" class="btn btn-primary">Analyze</button>
+    }
+</div>
